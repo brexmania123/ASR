@@ -27,8 +27,8 @@ class Commands implements CommandExecutor{
 						$sender->sendMessage("[ASR] Only Numbers is prohibited.");
 						return;
 					}
-					if($args[0] > 60){
-						$sender->sendMessage("[ASR] It's not advised the value would be more than 60. If you want to increase it, edit the config.yml instead as this plugin won't allow you to set the value more than the said value because it's not prescribed.");
+					if($args[0] > 90){
+						$sender->sendMessage("[ASR] It's not advised the value would be more than 90. If you want to increase it, edit the config.yml instead as this plugin won't allow you to set the value more than the said value because it's not prescribed.");
 						$sender->sendMessage("[ASR] Only Numbers is prohibited.");
 						return;
 					}
