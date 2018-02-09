@@ -1,5 +1,4 @@
 <?php
-
 /*
  *
  *  ____            _        _   __  __ _                  __  __ ____
@@ -14,23 +13,16 @@
  * (at your option) any later version.
  *
  * @author PocketMine Team
-
  *
  *
 */
-
 namespace iJoshuaHD\iMCPE\ASR;
-
 use pocketmine\scheduler\Task;
-
 class CallbackTask extends Task{
-
 	/** @var callable */
 	protected $callable;
-
 	/** @var array */
 	protected $args;
-
 	/**
 	 * @param callable $callable
 	 * @param array    $args
@@ -40,16 +32,13 @@ class CallbackTask extends Task{
 		$this->args = $args;
 		$this->args[] = $this;
 	}
-
 	/**
 	 * @return callable
 	 */
-	public function getCallable(){
+	public function getCallable(): callable{
 		return $this->callable;
 	}
-
-	public function onRun($currentTicks){
+	public function onRun(int $currentTick){
 		call_user_func_array($this->callable, $this->args);
 	}
-
 }
