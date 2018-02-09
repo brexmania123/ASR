@@ -1,34 +1,23 @@
 <?php
-
 /*
 ==================
-
 ASR Plugin by
 iJoshuaHD
-
 ==================
 */
-
 namespace iJoshuaHD\iMCPE\ASR;
-
 use pocketmine\Server;
 use pocketmine\Player;
-
 use pocketmine\command\CommandSender;
-
 use pocketmine\plugin\PluginBase;
-
 use pocketmine\utils\Config;
 use pocketmine\utils\TextFormat;
-
 class Loader extends PluginBase{
-
 	public $count_down = 60; //secs
 	public $time_count = array();
-
     public function onEnable(){
 		//Commands
-		$this->getCommand("asr")->setExecutor(new Commands($this));
+		$this->getCommand("sr")->setExecutor(new Commands($this));
 		$this->getCommand("restart")->setExecutor(new Commands($this));
 		//Task
 		$this->initial_start(2); //its obviously 1 sec but idk why xD
@@ -76,7 +65,6 @@ class Loader extends PluginBase{
 			$this->time_count['time'] = "$time $offset";
 		}
 	}
-
 	/*************************
 	*========================*
 	*====[ Plugin APIs ]=====*
@@ -89,7 +77,7 @@ class Loader extends PluginBase{
 	*/
 		if($timer == 1){
 			$this->start($this->restart_time + 1);
-			return;
+			return true;
 		}else{
 			$timer--;
 			$this->getServer()->getScheduler()->scheduleDelayedTask(new CallbackTask([$this,"initial_start" ], [$timer]), 20);
@@ -100,10 +88,10 @@ class Loader extends PluginBase{
 		$time_target--;
 		if($time_target == 1) $offset = "min.";
 		else $offset = "mins.";
-		$this->broadcast("Server will restart in $time_target $offset");
+		$this->broadcast("§dServer will restart in §5$time_target §d$offset");
 		if($time_target == 1){
 			$this->count_down($this->count_down + 1);
-			return;
+			return true;
 		}
 		$this->setTimer($time_target, $offset);
 		if($time_target < $this->restart_time){
@@ -115,16 +103,16 @@ class Loader extends PluginBase{
 	public function count_down($seconds){
 		if($seconds == 1){
 			foreach($this->getServer()->getOnlinePlayers() as $p){
-				$p->kick("Server Restart");
+				$p->kick("§aServer has been restarted. Rejoin.");
 			}
 			$this->getServer()->shutdown();
-			return;
+			return true;
 		}else{
 			$seconds--;
 			$this->setTimer($seconds, "secs.");
-			if($seconds == 30) $this->broadcast("Server will restart in $seconds seconds.");
-			if($seconds == 10) $this->broadcast("Server will restart in $seconds seconds.");
-			if($seconds < 6) $this->broadcast("Server will restart in $seconds.");
+			if($seconds == 30) $this->broadcast("§5Server will restart in §d$seconds §5seconds.");
+			if($seconds == 10) $this->broadcast("§2Server will restart in §a$seconds §2seconds.");
+			if($seconds < 6) $this->broadcast("§3Server will restart in §b$seconds §3seconds..");
 			$this->getServer()->getScheduler()->scheduleDelayedTask(new CallbackTask([$this,"count_down" ], [$seconds]), 20);
 		}
 	}
@@ -145,9 +133,9 @@ class Loader extends PluginBase{
 			$this->getServer()->getLogger()->info(TextFormat::YELLOW . "[ASR] Applying Configurations [...]");
 			@mkdir($this->getDataFolder(), 0777, true);
 			$this->preferences = new Config($this->getDataFolder() . "config.yml", Config::YAML);
-			$this->preferences->set("Version", "2.0.1");
-			$this->preferences->set("TimeToRestart", 30);
-			$this->preferences->set("Prefix", "[ASR]");
+			$this->preferences->set("Version", "3.0.0-B1");
+			$this->preferences->set("TimeToRestart", 90);
+			$this->preferences->set("Prefix", "§7[§cRestart§7]");
 			$this->preferences->set("Logger_DB", false);
 			$this->preferences->save();
 			$this->getServer()->getLogger()->info(TextFormat::AQUA . "[ASR] Note: Logger is disabled by default.");
@@ -162,20 +150,20 @@ class Loader extends PluginBase{
 			$this->preferences = new Config($this->getDataFolder() . "config.yml", Config::YAML);
 			$version = $this->preferences->get("Version");
 			$checker = $this->preferences->get("Logger_DB");
-			if($version !== "2.0.1" and $version == "2.0.0"){
+			if($version !== "3.0,0-B1" and $version == "2.0.1"){
 				$this->getServer()->getLogger()->info(TextFormat::YELLOW . "[ASR] It Seems you're using v$version of ASR.");
 				$this->getServer()->getLogger()->info(TextFormat::YELLOW . "[ASR] Applying Configuration Updates for v2.0.1 [...]");
-				$this->preferences->set("Version", "2.0.1");
+				$this->preferences->set("Version", "3.0.0-B1");
 				$this->preferences->set("Logger_DB", false);
 				$this->preferences->save();
 				$this->getServer()->getLogger()->info(TextFormat::GREEN . "[ASR] Done!");
 			}else{
-				if($version !== "2.0.1" and $version !== "2.0.0"){
+				if($version !== "3.0.0-B1" and $version !== "2.0.1"){
 					$this->getServer()->getLogger()->info(TextFormat::YELLOW . "[ASR] It Seems you're using an older version of ASR.");
 					$this->getServer()->getLogger()->info(TextFormat::YELLOW . "[ASR] Applying Configuration Updates [...]");
-					$this->preferences->set("Version", "2.0.1");
-					$this->preferences->set("TimeToRestart", 30);
-					$this->preferences->set("Prefix", "[ASR]");
+					$this->preferences->set("Version", "3.0.0-B1");
+					$this->preferences->set("TimeToRestart", 90);
+					$this->preferences->set("Prefix", "§7[§cRestart§7]");
 					$this->preferences->set("Logger_DB", false);
 					$this->preferences->save();
 					$this->getServer()->getLogger()->info(TextFormat::GREEN . "[ASR] Done!");
