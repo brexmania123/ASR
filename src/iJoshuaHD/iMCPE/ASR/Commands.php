@@ -15,7 +15,7 @@ class Commands implements CommandExecutor{
 	public function onCommand(CommandSender $sender, Command $command, string $label, array $args) : bool{
 		switch(strtolower($command->getName())){
 		
-			case "sr":
+			case 'sr':
 				if(isset($args[0])){
 					if(!is_numeric($args[0])){
 						$sender->sendMessage("§aOnly numbers are allowed.");
@@ -35,7 +35,7 @@ class Commands implements CommandExecutor{
 				}
 			break;
 		
-			case "restart":
+			case 'restart':
 				$time = $this->plugin->getTimer();
 				$sender->sendMessage("§7[§cRestart§7] §dThe server will restart in $time");
 				return true;
