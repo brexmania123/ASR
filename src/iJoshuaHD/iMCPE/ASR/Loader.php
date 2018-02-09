@@ -17,8 +17,8 @@ class Loader extends PluginBase{
 	public $time_count = array();
     public function onEnable(){
 		//Commands
-		$this->getCommand("sr")->setExecutor(new Commands($this));
-		$this->getCommand("restart")->setExecutor(new Commands($this));
+		$this->getCommand('sr')->setExecutor(new Commands($this));
+		$this->getCommand('restart')->setExecutor(new Commands($this));
 		//Task
 		$this->initial_start(2); //its obviously 1 sec but idk why xD
 		//Load Config
@@ -44,7 +44,7 @@ class Loader extends PluginBase{
 	}
 	
 	public function setValueTimer($value){
-		$this->preferences->set("TimeToRestart", $value);
+		$this->preferences->set('TimeToRestart', $value);
 		$this->preferences->save();
 	}
 	
@@ -52,7 +52,7 @@ class Loader extends PluginBase{
 		if(isset($this->time_count['time'])){
 			return $this->time_count['time'];
 		}else{
-			$this->setTimer($this->restart_time, "mins.");
+			$this->setTimer($this->restart_time, 'mins.');
 			return $this->time_count['time'];
 		}
 	}
@@ -60,9 +60,9 @@ class Loader extends PluginBase{
 	public function setTimer($time, $offset){
 		if(isset($this->time_count['time'])){
 			unset($this->time_count['time']);
-			$this->time_count['time'] = "$time $offset";
+			$this->time_count['time'] = '$time $offset';
 		}else{
-			$this->time_count['time'] = "$time $offset";
+			$this->time_count['time'] = '$time $offset';
 		}
 	}
 	/*************************
@@ -80,15 +80,15 @@ class Loader extends PluginBase{
 			return true;
 		}else{
 			$timer--;
-			$this->getServer()->getScheduler()->scheduleDelayedTask(new CallbackTask([$this,"initial_start" ], [$timer]), 20);
+			$this->getServer()->getScheduler()->scheduleDelayedTask(new CallbackTask([$this,'initial_start' ], [$timer]), 20);
 		}
 	}
 	
 	public function start($time_target){
 		$time_target--;
-		if($time_target == 1) $offset = "min.";
-		else $offset = "mins.";
-		$this->broadcast("§dServer will restart in §5$time_target §d$offset");
+		if($time_target == 1) $offset = 'min.';
+		else $offset = 'mins.';
+		$this->broadcast('§dServer will restart in §5$time_target §d$offset');
 		if($time_target == 1){
 			$this->count_down($this->count_down + 1);
 			return true;
@@ -97,23 +97,23 @@ class Loader extends PluginBase{
 		if($time_target < $this->restart_time){
 			$this->db->updateTimestamp();
 		}
-		$this->getServer()->getScheduler()->scheduleDelayedTask(new CallbackTask([$this,"start" ], [$time_target]), 1200);
+		$this->getServer()->getScheduler()->scheduleDelayedTask(new CallbackTask([$this,'start' ], [$time_target]), 1200);
 	}
 	
 	public function count_down($seconds){
 		if($seconds == 1){
 			foreach($this->getServer()->getOnlinePlayers() as $p){
-				$p->kick("§aServer has been restarted. Rejoin.");
+				$p->kick('§aServer has been restarted. Rejoin.');
 			}
 			$this->getServer()->shutdown();
 			return true;
 		}else{
 			$seconds--;
-			$this->setTimer($seconds, "secs.");
-			if($seconds == 30) $this->broadcast("§5Server will restart in §d$seconds §5seconds.");
-			if($seconds == 10) $this->broadcast("§2Server will restart in §a$seconds §2seconds.");
-			if($seconds < 6) $this->broadcast("§3Server will restart in §b$seconds §3seconds..");
-			$this->getServer()->getScheduler()->scheduleDelayedTask(new CallbackTask([$this,"count_down" ], [$seconds]), 20);
+			$this->setTimer($seconds, 'secs.');
+			if($seconds == 30) $this->broadcast('§5Server will restart in §d$seconds §5seconds.');
+			if($seconds == 10) $this->broadcast('§2Server will restart in §a$seconds §2seconds.');
+			if($seconds < 6) $this->broadcast('§3Server will restart in §b$seconds §3seconds..');
+			$this->getServer()->getScheduler()->scheduleDelayedTask(new CallbackTask([$this,'count_down' ], [$seconds]), 20);
 		}
 	}
 	
@@ -124,7 +124,7 @@ class Loader extends PluginBase{
 	************************/
 	
 	public function broadcast($msg){
-		return $this->getServer()->broadcastMessage($this->prefix . " $msg");
+		return $this->getServer()->broadcastMessage($this->prefix . ' $msg');
 	}
 	
 	public function loadConfigurations(){
@@ -132,11 +132,11 @@ class Loader extends PluginBase{
 			$this->getServer()->getLogger()->info(TextFormat::YELLOW . "[ASR] It Seems you're new in using ASR.");
 			$this->getServer()->getLogger()->info(TextFormat::YELLOW . "[ASR] Applying Configurations [...]");
 			@mkdir($this->getDataFolder(), 0777, true);
-			$this->preferences = new Config($this->getDataFolder() . "config.yml", Config::YAML);
-			$this->preferences->set("Version", "3.0.0-B1");
-			$this->preferences->set("TimeToRestart", 90);
-			$this->preferences->set("Prefix", "§7[§cRestart§7]");
-			$this->preferences->set("Logger_DB", false);
+			$this->preferences = new Config($this->getDataFolder() . 'config.yml', Config::YAML);
+			$this->preferences->set('Version', '3.0.0-B1');
+			$this->preferences->set('TimeToRestart', 90);
+			$this->preferences->set('Prefix', '§7[§cRestart§7]');
+			$this->preferences->set('Logger_DB', false);
 			$this->preferences->save();
 			$this->getServer()->getLogger()->info(TextFormat::AQUA . "[ASR] Note: Logger is disabled by default.");
 			$this->getServer()->getLogger()->info(TextFormat::BLUE . "[ASR] You can Enable it by editing the config.yml");
@@ -147,24 +147,24 @@ class Loader extends PluginBase{
 		/*	This would be useful when I make some further updates e.g. Multi Lingual Support. 
 			If you are worrying about if there's version 3.0.0 or more, don't worry, I'll deal
 			with it :)	*/
-			$this->preferences = new Config($this->getDataFolder() . "config.yml", Config::YAML);
-			$version = $this->preferences->get("Version");
-			$checker = $this->preferences->get("Logger_DB");
-			if($version !== "3.0,0-B1" and $version == "2.0.1"){
+			$this->preferences = new Config($this->getDataFolder() . 'config.yml', Config::YAML);
+			$version = $this->preferences->get('Version');
+			$checker = $this->preferences->get('Logger_DB');
+			if($version !== '3.0,0-B1' and $version == '2.0.1'){
 				$this->getServer()->getLogger()->info(TextFormat::YELLOW . "[ASR] It Seems you're using v$version of ASR.");
 				$this->getServer()->getLogger()->info(TextFormat::YELLOW . "[ASR] Applying Configuration Updates for v2.0.1 [...]");
-				$this->preferences->set("Version", "3.0.0-B1");
-				$this->preferences->set("Logger_DB", false);
+				$this->preferences->set('Version', '3.0.0-B1');
+				$this->preferences->set('Logger_DB', false);
 				$this->preferences->save();
 				$this->getServer()->getLogger()->info(TextFormat::GREEN . "[ASR] Done!");
 			}else{
-				if($version !== "3.0.0-B1" and $version !== "2.0.1"){
+				if($version !== '3.0.0-B1' and $version !== '2.0.1'){
 					$this->getServer()->getLogger()->info(TextFormat::YELLOW . "[ASR] It Seems you're using an older version of ASR.");
 					$this->getServer()->getLogger()->info(TextFormat::YELLOW . "[ASR] Applying Configuration Updates [...]");
-					$this->preferences->set("Version", "3.0.0-B1");
-					$this->preferences->set("TimeToRestart", 90);
-					$this->preferences->set("Prefix", "§7[§cRestart§7]");
-					$this->preferences->set("Logger_DB", false);
+					$this->preferences->set('Version', '3.0.0-B1');
+					$this->preferences->set('TimeToRestart', 90);
+					$this->preferences->set('Prefix', '§7[§cRestart§7]');
+					$this->preferences->set('Logger_DB', false);
 					$this->preferences->save();
 					$this->getServer()->getLogger()->info(TextFormat::GREEN . "[ASR] Done!");
 				}
@@ -176,12 +176,12 @@ class Loader extends PluginBase{
 				$this->getServer()->getLogger()->info(TextFormat::RED . "[ASR] Logger is DISABLED.");
 			}
 		}
-		if(!file_exists($this->getDataFolder() . "connector.yml")){
-			$this->saveResource("connector.yml");
+		if(!file_exists($this->getDataFolder() . 'connector.yml')){
+			$this->saveResource('connector.yml');
 		}
-		$this->cfg = new Config($this->getDataFolder() . "connector.yml", Config::YAML);
-		$this->restart_time = $this->preferences->get("TimeToRestart");
-		$this->prefix = $this->preferences->get("Prefix");
+		$this->cfg = new Config($this->getDataFolder() . 'connector.yml', Config::YAML);
+		$this->restart_time = $this->preferences->get('TimeToRestart');
+		$this->prefix = $this->preferences->get('Prefix');
 		$this->db = new Database($this); //connection with database
 		$this->db->loadDatabase();
 	}
